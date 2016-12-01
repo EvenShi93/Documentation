@@ -1,0 +1,22 @@
+from: http://www.cnblogs.com/ggjucheng/archive/2011/12/14/2287738.html
+
+1. one step:
+gcc test.c -o test
+
+2. four steps:
+1 -> Preprocessing: gcc -E test.c -o test.i OR gcc -E test.c
+2 -> Compilation: gcc -S test.i -o test.s
+3 -> Assembly: gcc -c test.s -o test.o
+4 -> Linking: gcc test.o -o test
+
+2. two files:
+gcc test1.c test2.c -o test
+OR
+gcc -c test1.c -o test1.o
+gcc -c test2.c -o test2.o
+gcc test1.o test2.o -o test
+
+3. -Wall: generate all waring information
+   -Werror: exit if warning
+   -I path: add path of inc file
+   -L path: add path of lib file (-static: use static lib when linking)
