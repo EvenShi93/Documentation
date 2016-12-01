@@ -1,0 +1,7 @@
+2016/12/01
+(* yuneec/wiki)eclipse install tools: http://gnuarmeclipse.github.io/articles/arm-com-2014-07/
+(**)Build STM32 applications with Eclipse, GCC and STM32Cube: http://www.carminenoviello.com/2015/06/04/stm32-applications-eclipse-gcc-stcube/
+(***)develop STM32 with Makefile on Ubuntu(eefocus.com/stmcu.org): http://www.stmcu.org/module/forum/thread-603753-1-1.html
+stm32 development on ubuntu with stdperiphlib: https://github.com/rowol
+STM32 Discovery Development On Linux: http://www.wolinlabs.com/blog/linux.stm32.discovery.gcc.html
+(baidu ubuntu linux开发stm32f7)
