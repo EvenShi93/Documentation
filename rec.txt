@@ -1,0 +1,2 @@
+//删除文件夹下面的所有的.svn文件 
+find . -name "*.svn" -exec rm -rf {} \; 
