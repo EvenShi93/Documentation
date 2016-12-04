@@ -1,2 +1,4 @@
 //删除文件夹下面的所有的.svn文件 
 find . -name "*.svn" -exec rm -rf {} \; 
+//建立软链接
+ln -s 源文件 目标文件
