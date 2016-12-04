@@ -1,0 +1,21 @@
+install st-link:
+clone stlink driver source code in git:
+	git clone https://github.com/texane/stlink.git
+build:
+	make
+entry dir:
+	cd build/Release
+install:
+	make install
+copy softlinker file:
+	cp libstlink.so.1 /usr/lib
+modify environment variables:
+	cd ~
+	vim .bashrc
+	export PATH=$PATH:/home/kaiyangchu/st-link/stlinkbuild/Release/
+reboot
+
+boot image:
+	st-flash write xx.bin 0x08000000
+
+st-flash --help
