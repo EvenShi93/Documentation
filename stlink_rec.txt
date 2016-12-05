@@ -6,10 +6,10 @@ build:
 entry dir:
 	cd build/Release
 install:
-	make install
+	sudo make install
 copy softlinker file:
 	cp libstlink.so.1 /usr/lib
-modify environment variables:
+[optional]modify environment variables:
 	cd ~
 	vim .bashrc
 	export PATH=$PATH:/home/kaiyangchu/st-link/stlinkbuild/Release/
