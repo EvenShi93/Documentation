@@ -5,5 +5,16 @@ add board: e.g. atest-v1
 3,Images/atest-v1.prototype (/Tools/px_mkfw.py)
 4,src/drivers/boards/atest-v1/... (/src/platforms/px4_config.h)
 5,git add ./
-[6,make distclean]
+[6,make distclean
 7,make atest-v1_default
+
+then :
+
+ROMFS: add atest_common folder && add init.d & mixers
+nuttx_atest-v1_default.cmake:
+1, configure ROMFSROOT atest_common
+2, configure module list: drivers/boards/atest-v1
+3, modify src/drivers/boards/atest-v1/board_config.h: define BOARD_NAME "atest-v1"
+4, deconfig: add CONFIG_ARCH_BOARD_ATEST-V1, then 
+   src/drivers/drv_gpio.h: defined(CONFIG_ARCH_BOARD_ATEST-V1), 2 place
+   src/modules/gpio_led/gpio_led.c: defined(CONFIG_ARCH_BOARD_ATEST-V1), 2 place
