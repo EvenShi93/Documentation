@@ -1,0 +1,113 @@
+sercon: Registering CDC/ACM serial driver
+sercon: Successfully registered the CDC/ACM serial driver
+[i] microSD mounted: /fs/microsd 
+[hardfault_log] Fault Log is Armed
+ERROR [mtd] failed to initialize mtd driver
+WARN  [param] selected parameter default file /fs/microsd/params
+WARN  [param] open failed '/fs/microsd/params'
+  SYS_AUTOSTART: curr: 0 -> new: 4001
+  SYS_AUTOCONFIG: curr: 0 -> new: 1
+  PWM_DISARMED: curr: 0 -> new: 900
+  PWM_MIN: curr: 1000 -> new: 1075
+  PWM_MAX: curr: 2000 -> new: 1950
+  NAV_ACC_RAD: curr: 10.0000 -> new: 2.0000
+  MPC_THR_MIN: curr: 0.1200 -> new: 0.1000
+  MPC_MANTHR_MIN: curr: 0.0800 -> new: 0.0400
+  RTL_RETURN_ALT: curr: 60.0000 -> new: 10.0000
+  RTL_DESCEND_ALT: curr: 30.0000 -> new: 5.0000
+  RTL_LAND_DELAY: curr: -1.0000 -> new: 0.0000
+  COM_DISARM_LAND: curr: 0 -> new: 2
+  MC_PITCHRATE_P: curr: 0.1500 -> new: 0.1300
+  MC_PITCHRATE_I: curr: 0.0500 -> new: 0.0000
+  MC_PITCHRATE_D: curr: 0.0030 -> new: 0.0032
+  MC_PITCHRATE_MAX: curr: 220.0000 -> new: 360.0000
+  MC_PITCH_P: curr: 6.5000 -> new: 4.5000
+  MC_ROLLRATE_P: curr: 0.1500 -> new: 0.1300
+  MC_ROLLRATE_I: curr: 0.0500 -> new: 0.0000
+  MC_ROLLRATE_D: curr: 0.0030 -> new: 0.0032
+  MC_ROLLRATE_MAX: curr: 220.0000 -> new: 360.0000
+  MC_ROLL_P: curr: 6.5000 -> new: 4.5000
+  MC_YAWRATE_P: curr: 0.2000 -> new: 0.1200
+  MC_YAWRATE_I: curr: 0.1000 -> new: 0.0500
+  MC_YAWRATE_MAX: curr: 200.0000 -> new: 120.0000
+  MC_YAW_P: curr: 2.8000 -> new: 3.0000
+  MPC_THR_MAX: curr: 0.9000 -> new: 0.9400
+  MPC_TILTMAX_AIR: curr: 45.0000 -> new: 35.0000
+  BAT_N_CELLS: curr: 0 -> new: 3
+  BAT_V_CHARGED: curr: 4.0500 -> new: 4.2000
+  COM_FLTMODE1: curr: -1 -> new: 5
+  COM_FLTMODE4: curr: -1 -> new: 2
+  COM_FLTMODE6: curr: -1 -> new: 0
+  RC_CHAN_CNT: curr: 0 -> new: 12
+  RC_MAP_PITCH: curr: 0 -> new: 3
+  RC_MAP_ROLL: curr: 0 -> new: 2
+  RC_MAP_THROTTLE: curr: 0 -> new: 1
+  RC_MAP_YAW: curr: 0 -> new: 4
+  RC_MAP_AUX1: curr: 0 -> new: 8
+  RC_MAP_AUX2: curr: 0 -> new: 7
+  RC_MAP_AUX3: curr: 0 -> new: 9
+  RC_MAP_AUX4: curr: 0 -> new: 10
+  RC1_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC1_MIN: curr: 1000.0000 -> new: 1163.0000
+  RC1_TRIM: curr: 1500.0000 -> new: 1163.0000
+  RC2_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC2_MIN: curr: 1000.0000 -> new: 1163.0000
+  RC2_REV: curr: 1.0000 -> new: -1.0000
+  RC3_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC3_MIN: curr: 1000.0000 -> new: 1163.0000
+  RC4_MAX: curr: 2000.0000 -> new: 1764.0000
+  RC4_MIN: curr: 1000.0000 -> new: 1233.0000
+  RC4_REV: curr: 1.0000 -> new: -1.0000
+  RC5_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC5_MIN: curr: 1000.0000 -> new: 1167.0000
+  RC7_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC7_MIN: curr: 1000.0000 -> new: 1163.0000
+  RC8_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC8_MIN: curr: 1000.0000 -> new: 1163.0000
+  RC9_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC9_MIN: curr: 1000.0000 -> new: 1067.0000
+  RC10_MAX: curr: 2000.0000 -> new: 1833.0000
+  RC10_MIN: curr: 1000.0000 -> new: 1067.0000
+  RC11_REV: curr: 1.0000 -> new: -1.0000
+  RC_MAP_FLTMODE: curr: 0 -> new: 5
+  RC_MAP_GEAR_SW: curr: 0 -> new: 11
+  RC_MAP_ARM_SW: curr: 0 -> new: 12
+WARN  [param] Error: Parameter COM_ARM_SWISBTN not found.
++ SYS_AUTOCONFIG: curr: 1 -> new: 0
+ERROR [tap_esc] failed to initialize tap_esc (-5)
+ERROR [tap_esc] failed to start tap_esc.
+WARN  [param] Error: Parameter MNT_MODE_IN not found.
+WARN  [param] Error: Parameter MNT_MODE_OUT not found.
+WARN  [param] Error: Parameter MNT_MAN_CONTROL not found.
+WARN  [param] Error: Parameter MNT_MAN_ROLL not found.
+WARN  [param] Error: Parameter MNT_MAN_PITCH not found.
+WARN  [param] Error: Parameter MNT_MAN_YAW not found.
+  EKF2_MIN_OBS_DT: curr: 20 -> new: 50
+  EKF2_GPS_DELAY: curr: 200.0000 -> new: 100.0000
+  EKF2_ASP_DELAY: curr: 200.0000 -> new: 0.0000
+  EKF2_EV_DELAY: curr: 175.0000 -> new: 0.0000
+INFO  [dataman] Unkown restart, data manager file '/fs/microsd/dataman' size is 47640 bytes
+IST8310 on I2C bus 1 at 0x0e (bus: 400 KHz, max: 400 KHz)
+INFO  [ist8310] no device on bus 2
+MS5611_SPI on SPI bus 1 at 16 (20000 KHz)
+MPU6500 on SPI bus 4 at 66 (1000 KHz)
+WARN  [commander] Buzzer: px4_open fail
+
+WARN  [commander] Buzzer init failed
+  MAV_PROTO_VER: curr: 0 -> new: 2
+INFO  [mavlink] mode: Config, data rate: 2000 B/s on /dev/ttyS3 @ 38400B
+WARN  [mavlink] hardware flow control not supported
+INFO  [mavlink] mode: Config, data rate: 800000 B/s on /dev/ttyACM0 @ 57600B
+ERROR [mixer] can't open /dev/tap_esc
+
+ERROR [mixer] failed to load mixer
+ERROR [init] Error loading mixer: /etc/mixers/quad_x.main.mix 
+INFO  [lib__ecl] EKF IMU buffer length = 11
+INFO  [lib__ecl] EKF observation buffer length = 4
+
+NuttShell (NSH)
+nsh> INFO  [lib__ecl] EKF using pressure height - commencing alignment
+INFO  [lib__ecl] EKF alignment complete
+WARN  [commander] Not ready to fly: Sensors not set up correctly
+
+nsh> W
