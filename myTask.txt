@@ -13,3 +13,5 @@ check unfind parameter according to startup_log.txt
 confirm imu orientation
 2016/12/11
 adc,battery voltage return.
+number of mag sensor on typhoon H? show on qgc?
+ist8310 -C start -> failed.
