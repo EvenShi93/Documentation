@@ -11,3 +11,5 @@ modify tap_esc
 verify connection to rc(st12/st16)
 check unfind parameter according to startup_log.txt
 confirm imu orientation
+2016/12/11
+adc,battery voltage return.
