@@ -15,3 +15,13 @@ confirm imu orientation
 adc,battery voltage return.
 number of mag sensor on typhoon H? show on qgc?
 ist8310 -C start -> failed.
+2016/12/20
+contrast deconfig file(bat1 <-> TyphoonQ)
+UART4 & UART5 RX_DMA
+SPI6 which device?
+ADC1_DMA configuration test
+LOOPSPERMSEC?
+USB_CDCACM configuration
+bootloader usb config...
+same to BreezePro ...
+change TyphoonQ arch board setting -> CONFIG_ARCH_BOARD_TYPHOONQ=y
