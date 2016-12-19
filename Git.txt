@@ -68,6 +68,8 @@ git branch -m devel develop
 git fetch -p
 查看远程分支与本地分支的跟踪对应关系
 git branch -vv
+将本地分支与远程分支建立链接
+git branch --set-upstream-to=origin/<branch> master
 
 隐藏当前的工作现场:
 git stash
