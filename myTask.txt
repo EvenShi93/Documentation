@@ -5,16 +5,19 @@
 stm32 development on ubuntu with stdperiphlib: https://github.com/rowol
 STM32 Discovery Development On Linux: http://www.wolinlabs.com/blog/linux.stm32.discovery.gcc.html
 (baidu ubuntu linux开发stm32f7)
+
 2016/12/10
 pull TyphoonQ
 modify tap_esc
 verify connection to rc(st12/st16)
 check unfind parameter according to startup_log.txt
 confirm imu orientation
+
 2016/12/11
 adc,battery voltage return.
 number of mag sensor on typhoon H? show on qgc?
 ist8310 -C start -> failed.
+
 2016/12/20
 contrast deconfig file(bat1 <-> TyphoonQ)
 UART4 & UART5 RX_DMA
@@ -25,3 +28,8 @@ USB_CDCACM configuration
 bootloader usb config...
 same to BreezePro ...
 change TyphoonQ arch board setting -> CONFIG_ARCH_BOARD_TYPHOONQ=y
+
+2016/12/21
+git account setting in lenovo xiaoxin <email ...>
+-> git config --global user.email "hello.kychu@gmail.com"
+Hardfault if imu cable is unplugged -> this is a known issues <https://github.com/YUNEEC/Firmware/issues/25>
