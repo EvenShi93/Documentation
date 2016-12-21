@@ -33,3 +33,12 @@ change TyphoonQ arch board setting -> CONFIG_ARCH_BOARD_TYPHOONQ=y
 git account setting in lenovo xiaoxin <email ...>
 -> git config --global user.email "hello.kychu@gmail.com"
 Hardfault if imu cable is unplugged -> this is a known issues <https://github.com/YUNEEC/Firmware/issues/25>
+
+2016/12/22
+icm20602 driver in bat12_test_platform, run mavlink on uart, led, pwm, mode...
+
+
+
+
+
+
