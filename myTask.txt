@@ -37,6 +37,21 @@ Hardfault if imu cable is unplugged -> this is a known issues <https://github.co
 2016/12/22
 icm20602 driver in bat12_test_platform, run mavlink on uart, led, pwm, mode...
 
+2016/12/26
+/* -----------------------!!! ATTENTION !!!----------------------- */
+sensors & sdcard & FRAM added the enable pin
+difference:
+1,   RF enable pin
+2,   ...
+/* -----------------------!!! ATTENTION !!!----------------------- */
+###### Need:
+1,   LED_SAFETY(PE12)
+2,   IMU_HEATER(no timer...)
+3,   enable pin(PG7,PE3,PG5)
+4,   FRAM driver
+5,   BTN_SAFETY(PE10)
+6,   RSSI ???
+######
 
 
 
