@@ -1,0 +1,62 @@
+src/modules/ekf2/ekf2_main.cpp:
+
+<main loop>
+
+EKF INPUT: (line 437)
+	orb_copy(ORB_ID(parameter_update), params_sub, &update);
+	orb_copy(ORB_ID(sensor_combined), sensors_sub, &sensors);
+	orb_copy(ORB_ID(vehicle_status), status_sub, &vehicle_status);
+	orb_copy(ORB_ID(vehicle_gps_position), gps_sub, &gps);
+	orb_copy(ORB_ID(airspeed), airspeed_sub, &airspeed);
+	orb_copy(ORB_ID(optical_flow), optical_flow_sub, &optical_flow);
+	orb_copy(ORB_ID(distance_sensor), range_finder_sub, &range_finder);
+	orb_copy(ORB_ID(vision_position_estimate), ev_pos_sub, &ev);
+
+/* ------------------------------------------------------------------------------- */
+DATA PROCESS: (line 525)
+push imu data into estimator:
+	_ekf.setIMUData(now, sensors.gyro_integral_dt * 1.e6f, sensors.accelerometer_integral_dt * 1.e6f,
+				gyro_integral, accel_integral);
+push mag data into estimator:
+	_ekf.setMagData(1000 * (uint64_t)mag_time_ms, mag_data_avg_ga);
+push baro data into estimator:
+	_ekf.setBaroData(1000 * (uint64_t)balt_time_ms, &balt_data_avg);
+push gps data into estimator if available:
+	_ekf.setGpsData(gps.timestamp, &gps_msg);
+only set airspeed data if condition for airspeed fusion are met:
+	_ekf.setAirspeedData(airspeed.timestamp, &airspeed.true_airspeed_m_s, &eas2tas);
+only fuse synthetic sideslip measurements if conditions are met:
+	_ekf.set_fuse_beta_flag(fuse_beta);
+push flow data into estimator:
+	_ekf.setOpticalFlowData(optical_flow.timestamp, &flow);
+push range_finder data into estimator:
+	_ekf.setRangeData(range_finder.timestamp, &range_finder.current_distance);
+get external vision data, if error estimates are unavailable, use parameter defined defaults:
+	_ekf.setExtVisionData(ev.timestamp, &ev_data);
+set in air status(is landing?)
+	_ekf.set_in_air_status(!vehicle_land_detected.landed);
+
+run the EKF update:
+	_ekf.update()
+
+/* ------------------------------------------------------------------------------- */
+EKF OUTPUT: (line 695)
+generate control state data: (line 704)
+	orb_publish(ORB_ID(control_state), _control_state_pub, &ctrl_state);
+generate vehicle attitude quaternion data: (line 788)
+	orb_publish(ORB_ID(vehicle_attitude), _att_pub, &att);
+generate vehicle local position data: (line 810)
+	orb_publish(ORB_ID(vehicle_local_position), _lpos_pub, &lpos);
+generate and publish global position data: (line 874)
+	orb_publish(ORB_ID(vehicle_global_position), _vehicle_global_position_pub, &global_pos);
+publish estimator status: (line 940)
+	orb_publish(ORB_ID(estimator_status), _estimator_status_pub, &status);
+Publish wind estimate: (line 964)
+	orb_publish(ORB_ID(wind_estimate), _wind_pub, &wind_estimate);
+publish estimator innovation data: (line 979)
+	orb_publish(ORB_ID(ekf2_innovations), _estimator_innovations_pub, &innovations);
+publish replay message if in replay mode: (line 1019)
+	orb_publish(ORB_ID(ekf2_replay), _replay_pub, &replay);
+
+</main loop>
+
