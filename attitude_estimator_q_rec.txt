@@ -1,0 +1,17 @@
+src/modules/attitude_estimator_q/attitude_estimator_q_main.cpp
+
+<main loop>
+
+ESTIMATOR INPUT:
+	orb_copy(ORB_ID(sensor_combined), _sensors_sub, &sensors)
+	orb_copy(ORB_ID(vision_position_estimate), _vision_sub, &_vision);
+	orb_copy(ORB_ID(att_pos_mocap), _mocap_sub, &_mocap);
+	orb_copy(ORB_ID(airspeed), _airspeed_sub, &_airspeed);
+	orb_copy(ORB_ID(vehicle_global_position), _global_pos_sub, &_gpos);
+
+ESTIMATOR OUTPUT:
+	orb_publish_auto(ORB_ID(vehicle_attitude), &_att_pub, &att, &att_inst, ORB_PRIO_HIGH);
+	orb_publish_auto(ORB_ID(control_state), &_ctrl_state_pub, &ctrl_state, &ctrl_inst, ORB_PRIO_HIGH);
+
+</main loop>
+
