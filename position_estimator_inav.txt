@@ -1,0 +1,36 @@
+src/modules/position_estimator_inav/position_estimator_inav_main.cpp
+
+<main loop>
+
+ESTIMATOR INPUT:
+vehicle attitude: (line 471)
+	orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_sub, &att);
+parameter update: (line 477)
+	orb_copy(ORB_ID(parameter_update), parameter_update_sub, &update);
+actuator: (line 486)
+	orb_copy(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, actuator_sub, &actuator);
+armed: (line 493)
+	orb_copy(ORB_ID(actuator_armed), armed_sub, &armed);
+sensor combined: (line 500)
+	orb_copy(ORB_ID(sensor_combined), sensor_combined_sub, &sensor);
+lidar alt estimation: (line 537)
+	orb_copy(ORB_ID(distance_sensor), distance_sensor_sub, &lidar);
+optical flow: (line 592)
+	orb_copy(ORB_ID(optical_flow), optical_flow_sub, &flow);
+vehicle rates setpoint: (line 655)
+	orb_copy(ORB_ID(vehicle_rates_setpoint), vehicle_rate_sp_sub, &rates_setpoint);
+vehicle vision position: (line 737)
+	orb_copy(ORB_ID(vision_position_estimate), vision_position_estimate_sub, &vision);
+vehicle mocap position: (line 807)
+	orb_copy(ORB_ID(att_pos_mocap), att_pos_mocap_sub, &mocap);
+vehicle GPS position: (line 835)
+	orb_copy(ORB_ID(vehicle_gps_position), vehicle_gps_position_sub, &gps);
+
+ESTIMATOR OUTPUT:
+publish local position:
+	orb_publish(ORB_ID(vehicle_local_position), vehicle_local_position_pub, &local_pos);
+publish global position:
+	orb_publish(ORB_ID(vehicle_global_position), vehicle_global_position_pub, &global_pos);
+
+</main loop>
+
