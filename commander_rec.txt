@@ -1,4 +1,31 @@
 src/modules/commander/...
 commander_main -> start / stop / status / calibrate / check / arm / disarm / takeoff / land / transition / mode / lockdown / usage(unrecognized command)...
 
-rcS: commander start -> spawn commander_thread_main -> set parameters -> init led & buzzer -> init vehicle_status && advertise it -> init & advertise armed, control_mode -> init _home, _roi, command_ack -> Subscribe topic safety, mission_result, geofence_result, manual_control_setpoint, offboard_control_mode, vehicle_global_position ... -> 
+rcS: commander start -> spawn commander_thread_main -> get parameters -> init led & buzzer -> init vehicle_status && advertise it -> init & advertise armed, control_mode -> init _home, _roi, command_ack
+ -> Subscribe topic 
+safety, 
+mission_result, 
+geofence_result, 
+manual_control_setpoint, 
+offboard_control_mode, 
+vehicle_global_position, 
+vehicle_local_attitude, 
+vehicle_attitude, 
+vehicle_land_detected, 
+vehicle_gps_position, 
+sensor_combined, 
+differential_pressure, 
+vehicle_command, 
+parameter_update, 
+battery_status, 
+subsystem_info, 
+position_setpoint_triplet, 
+system_power, 
+actuator_controls, 
+vtol_vehicle_status, 
+cpuload
+ -> control_status_leds (initialize done) -> run preflight check -> initialize low priority thread -> main loop
+
+ENTRY MAIN LOOP:
+init parameters if it update or loop at first time
+do preflightCheck(line 1916 && line 1921)
