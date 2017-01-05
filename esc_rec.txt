@@ -1,0 +1,2 @@
+armed: min output -> 1250
+disarmed: output -> 1190
