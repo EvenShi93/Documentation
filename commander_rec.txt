@@ -26,6 +26,32 @@ vtol_vehicle_status,
 cpuload
  -> control_status_leds (initialize done) -> run preflight check -> initialize low priority thread -> main loop
 
-ENTRY MAIN LOOP:
-init parameters if it update or loop at first time
-do preflightCheck(line 1916 && line 1921)
+ENTRY MAIN LOOP: (line 1728)
+check parameters: init parameters if it update or loop at first time
+check manual control data: none
+check offboard control data: ... update variables ...
+check telemetry status: ... do preflightCheck(line 1916 && line 1921)
+check sensor status: chekc barometer is healthy
+check differential pressure: 
+check system power: ...
+check safety: check & update & notify arming status changed (arming_state_transition(...))
+check vtol vehicle status: ...
+check global position estimate: ...
+check local position estimate: none
+check attitude estimate: none
+update condition_global_position_valid & notify it
+update condition_local_position_valid & check valid...
+check land detector: judge it & notify it by mavlink, console
+update auto_disarm_hysteresis: ...
+check cpuload
+check battery status: check battery voltage & notify low batter voltage
+check subsystem info: ...
+check position setpoint triplet: ...
+
+
+
+pre-flight check: Mag, Acc, Gyro, Baro, AirSpeed, RC, GNSS
+
+
+
+
