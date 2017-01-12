@@ -53,7 +53,7 @@ difference:
 6,   RSSI ???
 ######
 
-
-
+2017/01/11
+bug while run "ist8310 test"...
 
 

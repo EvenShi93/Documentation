@@ -18,4 +18,6 @@ nuttx_atest-v1_default.cmake:
 4, deconfig: add CONFIG_ARCH_BOARD_ATEST-V1, then 
    src/drivers/drv_gpio.h: defined(CONFIG_ARCH_BOARD_ATEST-V1), 2 place
    src/modules/gpio_led/gpio_led.c: defined(CONFIG_ARCH_BOARD_ATEST-V1), ? place
-   src/modules/sensors/sensors.cpp: _parameters.battery_v_div = 9.0f; 1 place
+   src/modules/sensors/sensors.cpp: _parameters.battery_v_div = 9.0f; 1 place   ====>    now is here:
+       ====> parameters.cpp    parameters.battery_v_div = 4.3f;    /* BAT -> 33K -> 10K -> GND */
+   src/modules/commander/commander.cpp
