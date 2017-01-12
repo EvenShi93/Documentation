@@ -1,0 +1,6 @@
+meld: [src]  MyGit : Yuneec
+drivers/boards/common/board_common.h & board_name.c
+
+
+change log:
+
