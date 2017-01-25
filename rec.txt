@@ -23,3 +23,8 @@ sudo apt-get purge 一个带core的package，如果没有带core的package，则
 2、清理残留数据
 
 dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
+
+
+修改主目录方法:
+sudo gedit /etc/passwd
+修改最后一行的目录名字(注意目录里的.bashrc文件，此为危险的操作)
