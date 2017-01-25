@@ -1,0 +1,190 @@
+1, MAVLINK V2 FRAM:
+| STX(header,1B) | LENGTH(PAYLOAD length,1B) | INCOMPAT_FLAGS(0,1B) | COMPAT_FLAGS(0,1B) | SEQ(sequence index,1B) | SYSID(1,1B) | COMPID(1,1B) | MSGID1(id LSB,1B) | MSGID2(id MSB,1B) | MSGID3(id HSB,1B) | PAYLOAD(data payload,max 255B) | CRC1(LSB,1B) | CRC2(HSB,1B) | SIGNATURE(signature,13B) |
+
+STX: 0xFD(for mavlink v2, '0xFE' for mavlink v1);
+LENGTH: PAYLOAD的长度;
+INCOMPAT_FLAGS: default 0x0;高7位必须为0,最低位指定是否带签名数据(SIGNATURE),0x00: 不带签名,0x01: 带签名;
+COMPAT_FLAGS: default 0x0;
+SEQ: 每发送一帧自动加1,用于统计丢帧率;
+SYSID: 固定为1;
+COMPID: 固定为1;
+MSGID: 24bit, MSGID1 = MSGID & 0xFF, MSGID2 = (MSGID >> 8) & 0xFF, MSGID3 = (MSGID >> 16) & 0xFF;
+PAYLOAD: 数据区;
+CRC: 16bit, CRC1 = CRC & 0xFF, CRC2 = (CRC >> 8) & 0xFF, 校验范围: LENGTH - PAYLOAD, 以及不同的消息会有自己的CRC_EXTRA(e.g. MAVLINK_MSG_ID_HEARTBEAT_CRC=50)也需要加入校验;
+SIGNATURE: 签名证书,13字节,根据数据包内容使用安全散列算法(sha256)算出,紧跟在CRC后面发出(仅在INCOMPAT_FLAGS为0x01时发送,一般没有);
+
+2, CRC ACCUMULATE:
+file: (source_code/checksum.h)
+static inline void crc_accumulate(uint8_t data, uint16_t *crcAccum)
+{
+        /*Accumulate one byte of data into the CRC*/
+        uint8_t tmp;
+
+        tmp = data ^ (uint8_t)(*crcAccum &0xff);
+        tmp ^= (tmp<<4);
+        *crcAccum = (*crcAccum>>8) ^ (tmp<<8) ^ (tmp <<3) ^ (tmp>>4);
+}
+data为新的数据;
+crcAccum传入上一次的计算结果, 并用于保存本次的计算结果, 初始值为0xffff;
+
+3, sha256 calculate:
+file: (source_code/mavlink_sha256.h)
+mavlink_sha256_update 用于放入新的数据
+mavlink_sha256_final_48 用于数据最终计算结果
+
+4, data flow:
+mavlink_common文件夹中以mavlink_msg_开头的.h文件定义了目前mavlink支持的消息(不一定完整,但已包含大部分需要交互的数据)
+后续会添加更多消息,编写格式应与这些文件的格式相同,或者由飞控方面编写并提供.h文件
+关于消息细节,可以参考http://mavlink.org/messages/common,(只作参考)
+以mavlink_msg_attitude.h为例:
+定义了该消息的ID为30, 长度为28, crc_extra为39;
+飞控发出:
+飞控使用函数mavlink_msg_attitude_send_struct发送姿态数据,将原结构体中的数据转换成char型数组填入PAYLOAD发出(函数_mav_finalize_message_chan_send)
+上位机或APP发出,飞控接收:
+飞控接收到一个完整的消息后,根据消息id执行不同的解码函数,在这里使用mavlink_msg_attitude_decode,解码得到的数据将会被应用到飞控中
+
+5, supported messages:
+飞控发出的:
+streams list(note: always limited at the source):
+* --------- MODE --------- * --------- NAME --------- * ----- FREQ(Hz) ---- *
+DEFAULT_STREAM                 "HEARTBEAT"                      1.0f
+                               "STATUSTEXT"                     20.0f
+                               "COMMAND_LONG"                   100.0f
+                               "PARAM_VALUE"                    120.0f
+                               "MAVLINK_FTP"                    80.0f
+                               "MAVLINK_LOG_HANDLER"            80.0f
+                               "MISSION_ITEM"                   10.0f
+*---------------------------------------------------------------------------*
+MAVLINK_MODE_NORMAL            "SYS_STATUS"                     1.0f
+                               "EXTENDED_SYS_STATE"             1.0f
+                               "HIGHRES_IMU"                    1.5f
+                               "ATTITUDE"                       20.0f
+                               "RC_CHANNELS"                    5.0f
+                               "SERVO_OUTPUT_RAW_0"             1.0f
+                               "ALTITUDE"                       1.0f
+                               "GPS_RAW_INT"                    1.0f
+                               "ADSB_VEHICLE"                   2.0f
+                               "COLLISION"                      2.0f
+                               "DISTANCE_SENSOR"                0.5f
+                               "OPTICAL_FLOW_RAD"               1.0f
+                               "VISION_POSITION_NED"            1.0f
+                               "ESTIMATOR_STATUS"               0.5f
+                               "NAV_CONTROLLER_OUTPUT"          1.5f
+                               "GLOBAL_POSITION_INT"            5.0f
+                               "LOCAL_POSITION_NED"             1.0f
+                               "POSITION_TARGET_GLOBAL_INT"     1.5f
+                               "ATTITUDE_TARGET"                2.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              1.0f
+                               "VFR_HUD"                        4.0f
+                               "WIND_COV"                       1.0f
+*---------------------------------------------------------------------------*
+MAVLINK_MODE_ONBOARD           "SYS_STATUS"                     5.0f
+                               "EXTENDED_SYS_STATE"             5.0f
+                               "HIGHRES_IMU"                    50.0f
+                               "ATTITUDE"                       250.0f
+                               "RC_CHANNELS"                    20.0f
+                               "SERVO_OUTPUT_RAW_0"             10.0f
+                               "ALTITUDE"                       10.0f
+                               "GPS_RAW_INT"                    5.0f
+                               "ADSB_VEHICLE"                   10.0f
+                               "COLLISION"                      10.0f
+                               "DISTANCE_SENSOR"                10.0f
+                               "OPTICAL_FLOW_RAD"               10.0f
+                               "VISION_POSITION_NED"            10.0f
+                               "ESTIMATOR_STATUS"               1.0f
+                               "NAV_CONTROLLER_OUTPUT"          10.0f
+                               "GLOBAL_POSITION_INT"            50.0f
+                               "LOCAL_POSITION_NED"             30.0f
+                               "POSITION_TARGET_GLOBAL_INT"     10.0f
+                               "ATTITUDE_TARGET"                10.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              10.0f
+                               "VFR_HUD"                        10.0f
+                               "WIND_COV"                       10.0f
+                               "POSITION_TARGET_LOCAL_NED"      10.0f
+                               "SYSTEM_TIME"                    1.0f
+                               "TIMESYNC"                       10.0f
+                               "CAMERA_CAPTURE"                 2.0f
+                               "CAMERA_TRIGGER"                 500.0f
+                               "ACTUATOR_CONTROL_TARGET0"       10.0f
+*---------------------------------------------------------------------------*
+MAVLINK_MODE_OSD               "SYS_STATUS"                     5.0f
+                               "EXTENDED_SYS_STATE"             1.0f
+                               "ATTITUDE"                       25.0f
+                               "RC_CHANNELS"                    5.0f
+                               "SERVO_OUTPUT_RAW_0"             1.0f
+                               "ALTITUDE"                       1.0f
+                               "GPS_RAW_INT"                    1.0f
+                               "ESTIMATOR_STATUS"               1.0f
+                               "GLOBAL_POSITION_INT"            10.0f
+                               "ATTITUDE_TARGET"                10.0f
+                               "HOME_POSITION"                  0.5f
+                               "VFR_HUD"                        25.0f
+                               "WIND_COV"                       2.0f
+                               "SYSTEM_TIME"                    1.0f
+MAVLINK_MODE_MAGIC
+*---------------------------------------------------------------------------*
+MAVLINK_MODE_CONFIG            "SYS_STATUS"                     1.0f
+                               "EXTENDED_SYS_STATE"             2.0f
+                               "HIGHRES_IMU"                    50.0f
+                               "ATTITUDE"                       100.0f
+                               "RC_CHANNELS"                    10.0f
+                               "SERVO_OUTPUT_RAW_0"             20.0f
+                               "SERVO_OUTPUT_RAW_1"             20.0f
+                               "ALTITUDE"                       10.0f
+                               "GPS_RAW_INT"                    10.0f
+                               "ADSB_VEHICLE"                   20.0f
+                               "COLLISION"                      20.0f
+                               "DISTANCE_SENSOR"                10.0f
+                               "OPTICAL_FLOW_RAD"               10.0f
+                               "VISION_POSITION_NED"            10.0f
+                               "ESTIMATOR_STATUS"               5.0f
+                               "NAV_CONTROLLER_OUTPUT"          10.0f
+                               "GLOBAL_POSITION_INT"            10.0f
+                               "LOCAL_POSITION_NED"             30.0f
+                               "POSITION_TARGET_GLOBAL_INT"     10.0f
+                               "ATTITUDE_TARGET"                8.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              50.0f
+                               "VFR_HUD"                        20.0f
+                               "WIND_COV"                       10.0f
+                               "CAMERA_TRIGGER"                 500.0f
+                               "MISSION_ITEM"                   50.0f
+                               "ACTUATOR_CONTROL_TARGET0"       30.0f
+                               "MANUAL_CONTROL"                 5.0f
+*---------------------------------------------------------------------------*
+MAVLINK_MODE_IRIDIUM           "HIGH_LATENCY"                   0.1f
+目前mavlink端口会返回DEFAULT_STREAM(必须要发送的数据包)以及MAVLINK_MODE_CONFIG两种模式下的数据给上位机或APP,NAME指定消息,FREQ指定消息发送的频率(频率较高的消息最终会收到硬件的限制,可能达不到想要的速度);
+飞控接收的:
+handle message by id:
+MAVLINK_MSG_ID_COMMAND_LONG
+MAVLINK_MSG_ID_COMMAND_INT
+MAVLINK_MSG_ID_OPTICAL_FLOW_RAD
+MAVLINK_MSG_ID_PING
+MAVLINK_MSG_ID_SET_MODE
+MAVLINK_MSG_ID_ATT_POS_MOCAP
+MAVLINK_MSG_ID_SET_POSITION_TARGET_LOCAL_NED
+MAVLINK_MSG_ID_SET_ATTITUDE_TARGET
+MAVLINK_MSG_ID_SET_ACTUATOR_CONTROL_TARGET
+MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE
+MAVLINK_MSG_ID_RADIO_STATUS
+MAVLINK_MSG_ID_MANUAL_CONTROL
+MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE
+MAVLINK_MSG_ID_HEARTBEAT
+MAVLINK_MSG_ID_REQUEST_DATA_STREAM
+MAVLINK_MSG_ID_SYSTEM_TIME
+MAVLINK_MSG_ID_TIMESYNC
+MAVLINK_MSG_ID_DISTANCE_SENSOR
+MAVLINK_MSG_ID_FOLLOW_TARGET
+MAVLINK_MSG_ID_ADSB_VEHICLE
+MAVLINK_MSG_ID_COLLISION
+MAVLINK_MSG_ID_GPS_RTCM_DATA
+MAVLINK_MSG_ID_BATTERY_STATUS
+MAVLINK_MSG_ID_SERIAL_CONTROL
+MAVLINK_MSG_ID_LOGGING_ACK
+以上为目前飞控支持接收并处理的消息的ID,飞控通过监听接收并处理消息(一些数据包属于必须发送的数据包,例如heartbeat心跳包);
+
+6, source file
+在soource_code文件夹下,解包/组包函数在mavlink_helpers.h中.
+或者到https://github.com/mavlink/c_library_v2

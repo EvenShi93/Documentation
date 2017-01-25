@@ -1,0 +1,160 @@
+src/modules/mavlink/mavlink_main.cpp:
+
+mavlink_main -> start/stop/stop-all/status/stream/boot_complete
+start:
+ 1-> MavlinkULog::initialize();
+ 2-> count instance (mavlink max instance = 4);
+ 3-> start task with name:"mavlink_ifx"(x is instance id), main->Mavlink::start_helper;
+ 4-> sleep until instance is fully initialized or timeout(100ms), exit.
+start_helper:
+ 1-> create a new instance;
+ 2-> instance->task_main(argc, argv);
+task_main:
+ 1->
+	-b set baudrate(9600 - 3000000)
+	-r set datarate(10 - 10000000(MAX_DATA_RATE))
+	-d set device(e.g. /dev/ttyACM0 or /dev/ttyS1) && set protocol:SERIAL
+	-m set mode(custom/camera/onboard/osd/magic/config)
+	-x set ftp on
+ 2-> if is SERIAL protocol:
+	1-> check instance already exists.
+	2-> flush stdout in case MAVLink is about to take it over(!!!).
+	3-> open port(use mavlink_open_uart, it will wait for usb connection)
+ 3-> Create a send mutex. if ftp/forwarding on, Create a message buffer mutex
+ 4-> Initialize system properties, update system.
+ 5-> Start receive thread(in mavlink_receiver.cpp) -> MavlinkReceiver::start_helper -> MavlinkReceiver::receive_thread, it will start a thread with name "mavlink_rcv_ifx"(where x is instance id).
+ 6-> add (default & user) streams use 'LL_APPEND(_streams, ...:MavlinkStream)' ... set main loop delay ...
+ 7-> send the system version blindly:
+	send_autopilot_capabilites(mavlink_main.cpp) -> mavlink_msg_autopilot_version_send_struct(mavlink_msg_autopoilt_version.h) ->
+	_mav_finalize_message_chan_send(mavlink_helpers.h) -> _mavlink_send_uart(mavlink_helpers.h) ->
+	MAVLINK_SEND_UART_BYTES(mavlink_helpers.h, defined at mavlink_bridge_header.h) -> mavlink_send_uart_bytes(mavlink_main.cpp)
+ 8-> entry main loop:
+	1-> update rate
+	2-> update system if param updated
+	3-> radio config check(just for 3DR radio)
+	4-> check status
+	5-> check command ack
+	6-> check mavlink log
+	7-> check mavlink shell output
+	8-> check ulog messages
+	9-> check requested subscriptions
+	10-> UPDATE STREAMS
+	11-> ...
+ 9-> exit main loop: ...
+ 
+ 
+LL_APPEND(_mavlink_instances, this); -> add instance: bump the instance count while the instance is fully initialized.
+
+
+
+
+streams list(note: always limited at the source):
+* --------- MODE --------- * --------- NAME --------- * ----- FREQ(Hz) ---- *
+DEFAULT_STREAM                 "HEARTBEAT"                      1.0f
+                               "STATUSTEXT"                     20.0f
+                               "COMMAND_LONG"                   100.0f
+                               "PARAM_VALUE"                    120.0f
+                               "MAVLINK_FTP"                    80.0f
+                               "MAVLINK_LOG_HANDLER"            80.0f
+                               "MISSION_ITEM"                   10.0f
+
+MAVLINK_MODE_NORMAL            "SYS_STATUS"                     1.0f
+                               "EXTENDED_SYS_STATE"             1.0f
+                               "HIGHRES_IMU"                    1.5f
+                               "ATTITUDE"                       20.0f
+                               "RC_CHANNELS"                    5.0f
+                               "SERVO_OUTPUT_RAW_0"             1.0f
+                               "ALTITUDE"                       1.0f
+                               "GPS_RAW_INT"                    1.0f
+                               "ADSB_VEHICLE"                   2.0f
+                               "COLLISION"                      2.0f
+                               "DISTANCE_SENSOR"                0.5f
+                               "OPTICAL_FLOW_RAD"               1.0f
+                               "VISION_POSITION_NED"            1.0f
+                               "ESTIMATOR_STATUS"               0.5f
+                               "NAV_CONTROLLER_OUTPUT"          1.5f
+                               "GLOBAL_POSITION_INT"            5.0f
+                               "LOCAL_POSITION_NED"             1.0f
+                               "POSITION_TARGET_GLOBAL_INT"     1.5f
+                               "ATTITUDE_TARGET"                2.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              1.0f
+                               "VFR_HUD"                        4.0f
+                               "WIND_COV"                       1.0f
+
+MAVLINK_MODE_ONBOARD           "SYS_STATUS"                     5.0f
+                               "EXTENDED_SYS_STATE"             5.0f
+                               "HIGHRES_IMU"                    50.0f
+                               "ATTITUDE"                       250.0f
+                               "RC_CHANNELS"                    20.0f
+                               "SERVO_OUTPUT_RAW_0"             10.0f
+                               "ALTITUDE"                       10.0f
+                               "GPS_RAW_INT"                    5.0f
+                               "ADSB_VEHICLE"                   10.0f
+                               "COLLISION"                      10.0f
+                               "DISTANCE_SENSOR"                10.0f
+                               "OPTICAL_FLOW_RAD"               10.0f
+                               "VISION_POSITION_NED"            10.0f
+                               "ESTIMATOR_STATUS"               1.0f
+                               "NAV_CONTROLLER_OUTPUT"          10.0f
+                               "GLOBAL_POSITION_INT"            50.0f
+                               "LOCAL_POSITION_NED"             30.0f
+                               "POSITION_TARGET_GLOBAL_INT"     10.0f
+                               "ATTITUDE_TARGET"                10.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              10.0f
+                               "VFR_HUD"                        10.0f
+                               "WIND_COV"                       10.0f
+                               "POSITION_TARGET_LOCAL_NED"      10.0f
+                               "SYSTEM_TIME"                    1.0f
+                               "TIMESYNC"                       10.0f
+                               "CAMERA_CAPTURE"                 2.0f
+                               "CAMERA_TRIGGER"                 500.0f
+                               "ACTUATOR_CONTROL_TARGET0"       10.0f
+
+MAVLINK_MODE_OSD               "SYS_STATUS"                     5.0f
+                               "EXTENDED_SYS_STATE"             1.0f
+                               "ATTITUDE"                       25.0f
+                               "RC_CHANNELS"                    5.0f
+                               "SERVO_OUTPUT_RAW_0"             1.0f
+                               "ALTITUDE"                       1.0f
+                               "GPS_RAW_INT"                    1.0f
+                               "ESTIMATOR_STATUS"               1.0f
+                               "GLOBAL_POSITION_INT"            10.0f
+                               "ATTITUDE_TARGET"                10.0f
+                               "HOME_POSITION"                  0.5f
+                               "VFR_HUD"                        25.0f
+                               "WIND_COV"                       2.0f
+                               "SYSTEM_TIME"                    1.0f
+MAVLINK_MODE_MAGIC
+
+MAVLINK_MODE_CONFIG            "SYS_STATUS"                     1.0f
+                               "EXTENDED_SYS_STATE"             2.0f
+                               "HIGHRES_IMU"                    50.0f
+                               "ATTITUDE"                       100.0f
+                               "RC_CHANNELS"                    10.0f
+                               "SERVO_OUTPUT_RAW_0"             20.0f
+                               "SERVO_OUTPUT_RAW_1"             20.0f
+                               "ALTITUDE"                       10.0f
+                               "GPS_RAW_INT"                    10.0f
+                               "ADSB_VEHICLE"                   20.0f
+                               "COLLISION"                      20.0f
+                               "DISTANCE_SENSOR"                10.0f
+                               "OPTICAL_FLOW_RAD"               10.0f
+                               "VISION_POSITION_NED"            10.0f
+                               "ESTIMATOR_STATUS"               5.0f
+                               "NAV_CONTROLLER_OUTPUT"          10.0f
+                               "GLOBAL_POSITION_INT"            10.0f
+                               "LOCAL_POSITION_NED"             30.0f
+                               "POSITION_TARGET_GLOBAL_INT"     10.0f
+                               "ATTITUDE_TARGET"                8.0f
+                               "HOME_POSITION"                  0.5f
+                               "NAMED_VALUE_FLOAT"              50.0f
+                               "VFR_HUD"                        20.0f
+                               "WIND_COV"                       10.0f
+                               "CAMERA_TRIGGER"                 500.0f
+                               "MISSION_ITEM"                   50.0f
+                               "ACTUATOR_CONTROL_TARGET0"       30.0f
+                               "MANUAL_CONTROL"                 5.0f
+
+MAVLINK_MODE_IRIDIUM           "HIGH_LATENCY"                   0.1f
