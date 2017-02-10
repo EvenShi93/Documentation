@@ -3,7 +3,11 @@ find . -name "*.svn" -exec rm -rf {} \;
 //建立软链接
 ln -s 源文件 目标文件
 
-
+查找目录下的所有文件中是否含有某个字符串 
+find .|xargs grep -ri "IBM" 
+查找目录下的所有文件中是否含有某个字符串,并且只打印出文件名 
+find .|xargs grep -ri "IBM" -l 
+详细:http://blog.csdn.net/duguduchong/article/details/7716908
 
 在Ubuntu终端彻底删除软件：
 
