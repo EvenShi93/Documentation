@@ -119,3 +119,7 @@ rm -rf subrep
 modify .gitmodules(!!!)
 modify .git/config(!!!)
 commit ...
+
+交互式rebase
+git rebase -i master
+详细:http://www.tuicool.com/articles/BFzY3mu
