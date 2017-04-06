@@ -1,3 +1,4 @@
+(details: doc/)
 install st-link:
 sudo apt-get install cmake
 sudo apt-get install git libusb-1.0.0-dev（libusb是st-link要的底层驱动）
