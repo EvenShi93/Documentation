@@ -1,0 +1,30 @@
+install st-link:
+sudo apt-get install cmake
+sudo apt-get install git libusb-1.0.0-dev（libusb是st-link要的底层驱动）
+clone stlink driver source code in git:
+	git clone https://github.com/texane/stlink.git
+//or
+	git clone https://github.com/WSCKY/st-link-driver.git
+build:
+	make
+//or
+	make release
+	make debug
+entry dir:
+	cd build/Release
+install:(it will installed in _install/ directory)
+	make install DESTDIR=_install
+copy rules file:
+	cd _install/etc/udev/rules.d
+	sudo cp 49* /etc/udev/rules.d
+modify environment variables:
+	cd ~
+	vim .bashrc
+	export PATH=$PATH:/home/kychu/st-link/stlink/build/Release/
+	source .bashrc
+//reboot
+
+boot image:
+	st-flash write xx.bin 0x08000000
+
+st-flash --help
