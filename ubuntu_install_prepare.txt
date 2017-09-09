@@ -30,6 +30,7 @@ PX4 needed:
         flex bison libncurses5-dev autoconf texinfo build-essential \
         libftdi-dev libtool zlib1g-dev \
         python-empy gcc-arm-embedded -y
+    sudo apt-get install python-jinja2
 
 openmv needed:
 11,
