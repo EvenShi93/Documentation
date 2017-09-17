@@ -4,8 +4,6 @@ sudo apt-get install cmake
 sudo apt-get install git libusb-1.0.0-dev（libusb是st-link要的底层驱动）
 clone stlink driver source code in git:
 	git clone https://github.com/texane/stlink.git
-//or
-	git clone https://github.com/WSCKY/st-link-driver.git
 build:
 	make
 //or
