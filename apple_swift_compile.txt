@@ -1,0 +1,13 @@
+编译问题：clang++: error: unable to execute command: Killed
+
+原因：
+  这是swap区不够大的原因。导致clang++ kernel opps
+解决方法：
+请加大分区：
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+开机自动挂载swap：
+使用 vi 或 nano 在 /etc/fstab 文件底部添加如下内容：
+/swapfile none swap sw 0 0
