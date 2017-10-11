@@ -60,5 +60,5 @@ ESP8266 xtensa-lx106-  compiler
     sudo apt-get remove libtool   (!!!remove!!! && re-install)
     (see "http://blog.csdn.net/flyingcys/article/details/71357261" for detail)
  (or see "http://blog.csdn.net/bailyzheng/article/details/76147094")
-
+17, sudo apt-get install meld
 
