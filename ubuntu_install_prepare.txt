@@ -59,5 +59,6 @@ ESP8266 xtensa-lx106-  compiler
 16, sudo apt-get install autoconf build-essential gperf bison flex texinfo libtool libncurses5-dev wget gawk libc6-dev-amd64 python-serial libexpat-dev
     sudo apt-get remove libtool   (!!!remove!!! && re-install)
     (see "http://blog.csdn.net/flyingcys/article/details/71357261" for detail)
+ (or see "http://blog.csdn.net/bailyzheng/article/details/76147094")
 
 
