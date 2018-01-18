@@ -62,3 +62,9 @@ ESP8266 xtensa-lx106-  compiler
  (or see "http://blog.csdn.net/bailyzheng/article/details/76147094")
 17, sudo apt-get install meld
 
+18, gcc-avr:
+sudo apt-get install gcc-avr
+sudo apt-get install avr-libc
+sudo apt-get install gdb-avr
+sudo apt-get install avrdude
+
