@@ -68,3 +68,8 @@ sudo apt-get install avr-libc
 sudo apt-get install gdb-avr
 sudo apt-get install avrdude
 
+19, install flashplayer for firefox
+    download 'flash_player_npapi_linux.x86_64.tar.gz' form Adobe offical webserver
+    tar -vxf flash_player_npapi_linux.x86_64.tar.gz
+    cp libflashplayer.so ~/.mozilla/plugins           (create this directory if it not existed)
+
